@@ -10,7 +10,6 @@ const resolvers = {
                     $or: [{ _id: context.user._id}, { username: context.user.username }],
                   })
                   .select('-__v -password')
-                  .populate('savedBooks');
                 
                 return userData;
             }
@@ -46,7 +45,7 @@ const resolvers = {
             if (context.user) {
                 const updatedUserData = await User.findOneAndUpdate(
                     { _id: context.user._id },
-                    { $push: { savedBooks: { ...args } } },
+                    { $push: { savedBooks: args.input } },
                     { new: true, runValidators: true}
                 );
                 return updatedUserData;
@@ -58,14 +57,14 @@ const resolvers = {
             if (context.user) {
                 const updatedUserData = await User.findByIdAndUpdate(
                     { _id: context.user._id },
-                    { $pull: { savedBooks: { bookId: params.bookId } } },
+                    { $pull: { savedBooks: { bookId } } },
                     { new: true }
                 );
                 
                 return updatedUserData;
             }
 
-            throw new AuthenticationError("You need to be logged in!");
+            throw new AuthenticationError("You need to be logged in!")
         }
     }
 };
