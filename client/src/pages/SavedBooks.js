@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
 
 import { useQuery, useMutation } from '@apollo/client';
@@ -13,7 +14,7 @@ const SavedBooks = () => {
 
   // use this to determine if `useEffect()` hook needs to run again
   // const userDataLength = Object.keys(userData).length
-
+  
   const { loading, data } = useQuery(GET_ME);
   const [removeBook, { error }] = useMutation(REMOVE_BOOK, {
     update(cache, { data: { removeBook } } ) {
@@ -26,17 +27,20 @@ const SavedBooks = () => {
       }
     }
   });
-
+  
   const userData = data?.me || {};
-
+  
+  if (Auth.isTokenExpired) {
+    return <Redirect to="/" />
+  };
   // useEffect(() => {
-  //   const getUserData = async () => {
-  //     try {
-  //       const token = Auth.loggedIn() ? Auth.getToken() : null;
-
-  //       if (!token) {
-  //         return false;
-  //       }
+    //   const getUserData = async () => {
+      //     try {
+        //       const token = Auth.loggedIn() ? Auth.getToken() : null;
+        
+        //       if (!token) {
+          //         return false;
+          //       }
 
   //       const response = await getMe(token);
 
@@ -56,6 +60,10 @@ const SavedBooks = () => {
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
+    if (Auth.isTokenExpired) {
+      return <Redirect to="/" />
+    };
+    
     const token = Auth.loggedIn() ? Auth.getToken() : null;
     if (!token) {
       return false;
