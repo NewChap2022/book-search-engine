@@ -16,11 +16,11 @@ const SavedBooks = () => {
 
   const { loading, data } = useQuery(GET_ME);
   const [removeBook, { error }] = useMutation(REMOVE_BOOK, {
-    update(cache) {
+    update(cache, { data: { removeBook } } ) {
       try {
         const { me } = cache.readQuery({ query: GET_ME });
-        me.savedBooks = data.savedBooks.filter(( id ) => data.savedBooks.bookId !== id);
-        cache.writeQuery({ query: GET_ME }, data);
+        const newSavedBooks = me.savedBooks.filter(( id ) => me.savedBooks.bookId !== removeBook.savedBooks[0].bookId);
+        cache.writeQuery({ query: GET_ME, data: { me: { ...me, savedBooks: newSavedBooks } } });
       } catch (err) {
         console.error(err)
       }
@@ -57,7 +57,6 @@ const SavedBooks = () => {
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
-    console.log(bookId);
     if (!token) {
       return false;
     }
