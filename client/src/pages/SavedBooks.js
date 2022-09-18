@@ -30,7 +30,7 @@ const SavedBooks = () => {
   
   const userData = data?.me || {};
   
-  if (Auth.isTokenExpired) {
+  if (!Auth.loggedIn()) {
     return <Redirect to="/" />
   };
   // useEffect(() => {
@@ -60,10 +60,10 @@ const SavedBooks = () => {
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
-    if (Auth.isTokenExpired) {
+    if (!Auth.loggedIn()) {
       return <Redirect to="/" />
     };
-    
+
     const token = Auth.loggedIn() ? Auth.getToken() : null;
     if (!token) {
       return false;
