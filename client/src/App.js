@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import {
   ApolloClient,
@@ -32,13 +32,15 @@ const client = new ApolloClient({
 });
 
 function App() {
+  const [loginState, setLoginState] = useState(false);
+
   return (
     <ApolloProvider client={client}>
       <Router>
         <>
-          <Navbar />
+          <Navbar loginState={loginState} changeLoginState={setLoginState}/>
           <Switch>
-            <Route exact path='/' component={SearchBooks} />
+            <Route exact path='/'><SearchBooks changeLoginState={setLoginState} /></Route>
             <Route exact path='/saved' component={SavedBooks} />
             <Route render={() => <h1 className='display-2'>Wrong page!</h1>} />
           </Switch>
