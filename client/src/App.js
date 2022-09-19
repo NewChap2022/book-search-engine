@@ -38,9 +38,9 @@ function App() {
     <ApolloProvider client={client}>
       <Router>
         <>
-          <Navbar loginState={loginState} changeLoginState={setLoginState}/>
+          <Navbar loginState={loginState} setLoginState={setLoginState}/>
           <Switch>
-            <Route exact path='/'><SearchBooks changeLoginState={setLoginState} /></Route>
+            <Route exact path='/'><SearchBooks setLoginState={setLoginState} /></Route>
             <Route exact path='/saved' component={SavedBooks} />
             <Route render={() => <h1 className='display-2'>Wrong page!</h1>} />
           </Switch>
